@@ -23,7 +23,7 @@ ARogueCharacter::ARogueCharacter()
 
 void ARogueCharacter::Move(const FInputActionValue& Value)
 {
-	FVector2D InputValue = Value.Get<FVector2D>();
+	const FVector2D InputValue = Value.Get<FVector2D>();
 	FRotator ControlRot = GetControlRotation();
 	ControlRot.Pitch = 0.f;
 	FVector MovementDirection = FVector(InputValue, 0.f);
@@ -59,7 +59,6 @@ void ARogueCharacter::Tick(float DeltaTime)
 void ARogueCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 	if (UEnhancedInputComponent* EnhancedInput = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
 		EnhancedInput->BindAction(Input_Move, ETriggerEvent::Triggered, this, &ARogueCharacter::Move);
 		EnhancedInput->BindAction(Input_Look, ETriggerEvent::Triggered, this, &ARogueCharacter::Look);
