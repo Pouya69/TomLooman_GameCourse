@@ -6,6 +6,14 @@
 #include "GameFramework/Character.h"
 #include "RogueCharacter.generated.h"
 
+
+struct FInputActionInstance;
+struct FInputActionValue;
+class UCameraComponent;
+class USpringArmComponent;
+class UInputAction;
+
+
 UCLASS()
 class TOMLOOMAN_GAMECOURSE_API ARogueCharacter : public ACharacter
 {
@@ -17,6 +25,21 @@ public:
 
 protected:
 	// Called when the game starts or when spawned
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+		TObjectPtr<UInputAction> Input_Move;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+		TObjectPtr<UInputAction> Input_Look;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+		TObjectPtr<UCameraComponent> CameraComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+		TObjectPtr<USpringArmComponent> SpringArmComponent;
+
+	void Move(const FInputActionValue& Value);
+	void Look(const FInputActionInstance& Value);
+
 	virtual void BeginPlay() override;
 
 public:	
