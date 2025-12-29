@@ -2,29 +2,19 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "RogueProjectileBase.h"
 #include "RogueProjectileMagic.generated.h"
 
-class UProjectileMovementComponent;
-class USphereComponent;
-class UNiagaraComponent;
 
-UCLASS()
-class TOMLOOMAN_GAMECOURSE_API ARogueProjectileMagic : public AActor
+UCLASS(Abstract)
+class TOMLOOMAN_GAMECOURSE_API ARogueProjectileMagic : public ARogueProjectileBase
 {
 	GENERATED_BODY()
-
 public:
 	ARogueProjectileMagic();
 	
+	virtual void PostInitializeComponents() override;
+
 protected:
-	UPROPERTY(EditDefaultsOnly, Category="Components")
-		TObjectPtr<USphereComponent> SphereComponent;
-	
-	UPROPERTY(EditDefaultsOnly, Category="Components")
-		TObjectPtr<UProjectileMovementComponent> ProjectileMovementComponent;
-	
-	UPROPERTY(EditDefaultsOnly, Category="Components")
-		TObjectPtr<UNiagaraComponent> LoopedNiagaraComponent;
+	virtual void OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) override;
 };
