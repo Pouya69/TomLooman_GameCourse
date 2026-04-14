@@ -39,7 +39,7 @@ public:
 	// In BP, we need to right click on Interact event
 	// Then we press 'Add Call to Parent Function'
 	// It will call this.
-	virtual void Interact_Implementation() override;
+	virtual void Interact_Implementation(AActor* CharacterInteracting) override;
 	
 	virtual void Tick(float DeltaTime) override;
 };

@@ -4,6 +4,7 @@
 #include "RogueExplosiveBarrel.h"
 
 #include "NiagaraFunctionLibrary.h"
+#include "ActionSystem/RogueActionSystemComponent.h"
 #include "Components/AudioComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "PhysicsEngine/RadialForceComponent.h"
@@ -30,15 +31,37 @@ ARogueExplosiveBarrel::ARogueExplosiveBarrel()
 	FireTrailSoundComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("FireTrailSoundComp"));
 	FireTrailSoundComponent->SetupAttachment(BarrelMeshComponent);
 	FireTrailSoundComponent->bAutoActivate = false;
+	
+	ActionSystemComponent = CreateDefaultSubobject<URogueActionSystemComponent>(TEXT("ActionSystemComp"));
+	ActionSystemComponent->InitializeAttributes(FRogueAttributeSet(50.f, 50.f, 10.f));
+}
+
+bool ARogueExplosiveBarrel::GetActionSystemComponent_Implementation(
+	URogueActionSystemComponent*& OutActionSystemComponent)
+{
+	OutActionSystemComponent = ActionSystemComponent;
+	return ActionSystemComponent != nullptr;
 }
 
 void ARogueExplosiveBarrel::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+	
 	OnDestroyed.AddDynamic(this, &ARogueExplosiveBarrel::Exploded);
 	
+	ActionSystemComponent->InitializeAttributes(FRogueAttributeSet(50.f, 50.f, 10.f));
+	ActionSystemComponent->OnHealthChanged.AddDynamic(this, &ARogueExplosiveBarrel::OnHealthChanged);
 }
 
+void ARogueExplosiveBarrel::OnHealthChanged(AActor* InstigatorActor, URogueActionSystemComponent* OwningComp,
+	const float NewHealth, const float OldHealth)
+{
+	if (NewHealth <= 0.f)
+	{
+		// Died
+		StartExplosion(NewHealth - OldHealth);
+	}
+}
 
 // Called every frame
 void ARogueExplosiveBarrel::Tick(float DeltaTime)
@@ -53,7 +76,6 @@ void ARogueExplosiveBarrel::Explode()
 	BarrelMeshComponent->AddImpulse(BarrelMeshComponent->GetUpVector() * 1000.f, NAME_None, true);
 	BarrelMeshComponent->AddAngularImpulseInDegrees(BarrelMeshComponent->GetRightVector() * 1000.f, NAME_None, true);
 	
-	FTimerHandle DestroyTimerHandle;
 	GetWorldTimerManager().SetTimer(DestroyTimerHandle, this, &ARogueExplosiveBarrel::DestroyBarrel, ExplosionTimer);
 }
 
@@ -72,17 +94,13 @@ void ARogueExplosiveBarrel::DestroyBarrel()
 	Destroy();
 }
 
-float ARogueExplosiveBarrel::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
-                                        class AController* EventInstigator, AActor* DamageCauser)
+void ARogueExplosiveBarrel::StartExplosion(const float ActualDamage)
 {
-	const float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-	if (GetWorldTimerManager().IsTimerActive(ExplosionTimerHandle)) return ActualDamage;
+	if (GetWorldTimerManager().IsTimerActive(ExplosionTimerHandle) || GetWorldTimerManager().IsTimerActive(DestroyTimerHandle)) return;
 	UNiagaraFunctionLibrary::SpawnSystemAttached(FireTrailEffect, BarrelMeshComponent, NAME_None, FVector::ZeroVector,
 		 FRotator::ZeroRotator, EAttachLocation::Type::SnapToTarget, true);
 	// UGameplayStatics::SpawnSoundAttached(FireTrailSound);
 	FireTrailSoundComponent->Activate();
 	
 	GetWorldTimerManager().SetTimer(ExplosionTimerHandle, this, &ARogueExplosiveBarrel::Explode, LaunchExplosionTimer);
-	
-	return ActualDamage;
 }

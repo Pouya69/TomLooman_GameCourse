@@ -8,6 +8,12 @@
 #include "Core/RogueInteractionInterface.h"
 // #include "TomLooman_GameCourse/Core/RogueInteractionInterface.h"
 
+// ECVF_Cheat is only for devs not shipping. Won't be available in shipping.
+// You are creating your own custom CVars.
+TAutoConsoleVariable<bool> CVarInteractionDebugDrawing(TEXT("game.interaction.DebugDraw"),
+	false,
+	TEXT("Enable debug drawing of interaction elements."), ECVF_Cheat);
+
 
 URogueInteractionComponent::URogueInteractionComponent()
 {
@@ -26,7 +32,8 @@ void URogueInteractionComponent::Interact()
 	// This is how we call Interact on interfaces for BP implementation. No need for casting.
 	// In BP, we right click on even and do 'Call Parent ...'
 	// This would call Interact_Implementation() first and then what we have.
-	IRogueInteractionInterface::Execute_Interact(SelectedActor);
+	if (SelectedActor)
+		IRogueInteractionInterface::Execute_Interact(SelectedActor, CastChecked<APlayerController>(GetOwner())->GetPawn());
 }
 
 void URogueInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
@@ -45,9 +52,14 @@ void URogueInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickT
 	// COLLISION_INTERACTION = ECC_GameTraceChannel1
 	const ECollisionChannel CollisionChannel = COLLISION_INTERACTION;
 	const FCollisionShape CollisionShape = FCollisionShape::MakeSphere(InteractionRadius);
-	GetWorld()->OverlapMultiByChannel(Overlaps, Center, FQuat::Identity, CollisionChannel, CollisionShape);
 	
-	DrawDebugSphere(GetWorld(), Center, InteractionRadius, 32.f, FColor::White);
+	const bool bIsInteractionDebugEnabled = CVarInteractionDebugDrawing.GetValueOnGameThread();
+	GetWorld()->OverlapMultiByChannel(Overlaps, Center, FQuat::Identity, CollisionChannel, CollisionShape);
+	if (bIsInteractionDebugEnabled)
+	{
+		DrawDebugSphere(GetWorld(), Center, InteractionRadius, 32.f, FColor::White);
+	}
+	
 	
 	// Closer to camera's looking direction
 	// We are using this method to find the best interactable based on the closest camera angle
@@ -58,7 +70,6 @@ void URogueInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickT
 	
 	AActor* BestActor = nullptr;
 	float HighestDotResult = -1.f;
-	
 	for (FOverlapResult& OverlapResult : Overlaps)
 	{
 		const FVector OverlapLocation = OverlapResult.GetActor()->GetActorLocation();
@@ -70,18 +81,21 @@ void URogueInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickT
 			BestActor = OverlapResult.GetActor();
 			HighestDotResult = DotResult;
 		}
-		
-		FString DebugString = FString::Printf(TEXT("Dot: %f"), DotResult);
-		DrawDebugString(GetWorld(), OverlapLocation, DebugString, nullptr, FColor::White, 0.f, true);
-		DrawDebugBox(GetWorld(), OverlapLocation, FVector(50.f), FColor::Red, false);
-
+		if (bIsInteractionDebugEnabled)
+		{
+			FString DebugString = FString::Printf(TEXT("Dot: %f"), DotResult);
+			DrawDebugString(GetWorld(), OverlapLocation, DebugString, nullptr, FColor::White, 0.f, true);
+			DrawDebugBox(GetWorld(), OverlapLocation, FVector(50.f), FColor::Red, false);
+		}
 	}
 	
 	SelectedActor = BestActor;
-	
-	if (BestActor != nullptr)
+	if (bIsInteractionDebugEnabled)
 	{
-		
-		DrawDebugBox(GetWorld(), BestActor->GetActorLocation(), FVector(60.f), FColor::Green, false);
+		if (BestActor != nullptr)
+		{
+			DrawDebugBox(GetWorld(), BestActor->GetActorLocation(), FVector(60.f), FColor::Green, false);
+		}
 	}
+	
 }

@@ -5,11 +5,10 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
-#include "NiagaraFunctionLibrary.h"
-#include "Kismet/GameplayStatics.h"
-#include "TomLooman_GameCourse/Projectiles/RogueProjectileMagic.h"
-#include "TomLooman_GameCourse/Projectiles/RogueProjectileBlackhole.h"
-#include "TomLooman_GameCourse/Projectiles/RogueProjectileTeleporter.h"
+#include "RogueVisualFeedbackComponent.h"
+#include "ActionSystem/RogueActionComponent.h"
+#include "ActionSystem/RogueActionSystemComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 ARoguePlayerCharacter::ARoguePlayerCharacter()
@@ -17,6 +16,8 @@ ARoguePlayerCharacter::ARoguePlayerCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	ActionSystemComponent = CreateDefaultSubobject<URogueActionSystemComponent>(TEXT("RogueActionSystemComp"));
+	
 	// bUseControllerRotationYaw = false;
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm Comp"));
 	SpringArmComponent->SetupAttachment(GetRootComponent());
@@ -25,13 +26,17 @@ ARoguePlayerCharacter::ARoguePlayerCharacter()
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera Comp"));
 	CameraComponent->SetupAttachment(SpringArmComponent);
 	
-	MuzzleSocketName = FName("Muzzle_01");
+	PlayerVisualFeedbackComponent = CreateDefaultSubobject<URogueVisualFeedbackComponent>(TEXT("VisualFeedbackComp"));
+	
+	ActionComponent = CreateDefaultSubobject<URogueActionComponent>(TEXT("Action Component"));
 }
 
-// Called when the game starts or when spawned
-void ARoguePlayerCharacter::BeginPlay()
+void ARoguePlayerCharacter::PostInitializeComponents()
 {
-	Super::BeginPlay();
+	Super::PostInitializeComponents();
+	ActionSystemComponent->OnHealthChanged.AddDynamic(this, &ARoguePlayerCharacter::OnPlayerHealthChanged);
+	
+	PlayerVisualFeedbackComponent->InitializeVisualFeedback(GetMesh());
 	
 }
 
@@ -46,8 +51,32 @@ void ARoguePlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 		EnhancedInput->BindAction(Input_SecondaryAttack, ETriggerEvent::Triggered, this, &ARoguePlayerCharacter::SecondaryAttack);
 		EnhancedInput->BindAction(Input_Jump, ETriggerEvent::Triggered, this, &ARoguePlayerCharacter::Jump);
 		EnhancedInput->BindAction(Input_BlackholeAttack, ETriggerEvent::Triggered, this, &ARoguePlayerCharacter::BlackholeAttack);
+		EnhancedInput->BindAction(Input_Sprint, ETriggerEvent::Started, this, &ARoguePlayerCharacter::StartSprint);
+		EnhancedInput->BindAction(Input_Sprint, ETriggerEvent::Completed, this, &ARoguePlayerCharacter::StopSprint);
+		EnhancedInput->BindAction(Input_Parry, ETriggerEvent::Triggered, this, &ARoguePlayerCharacter::Parry);
 	}
 
+}
+
+float ARoguePlayerCharacter::GetHealth() const
+{
+	return ActionSystemComponent->GetHealth();
+}
+
+bool ARoguePlayerCharacter::GetActionSystemComponent_Implementation(URogueActionSystemComponent*& OutActionSystemComponent)
+{
+	OutActionSystemComponent = ActionSystemComponent;
+	return ActionSystemComponent != nullptr;
+}
+
+void ARoguePlayerCharacter::HealSelf(const float Amount)
+{
+	ActionSystemComponent->ApplyHealthChange(nullptr, Amount);
+}
+
+FVector ARoguePlayerCharacter::GetPawnViewLocation() const
+{
+	return CameraComponent->GetComponentLocation();
 }
 
 void ARoguePlayerCharacter::Move(const FInputActionValue& Value)
@@ -71,86 +100,95 @@ void ARoguePlayerCharacter::Look(const FInputActionInstance& Value)
 
 void ARoguePlayerCharacter::PrimaryAttack()
 {
-	PlayAnimMontage(AttackMontage);
-	UNiagaraFunctionLibrary::SpawnSystemAttached(MagicCastingEffect, GetMesh(), MuzzleSocketName,
-		FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::Type::SnapToTarget, true);
-	UGameplayStatics::PlaySound2D(this, MagicCastingSound);
-	
-	FTimerHandle AttackTimerHandle;
-	const float AttackTimer = 0.2f;
-	FTimerDelegate TimerDelegate;
-	TimerDelegate.BindLambda([&]()
-	{
-		AttackTimerElapsed(MagicProjectileClass, GetControlRotation());
-	});
-	GetWorldTimerManager().SetTimer(AttackTimerHandle, TimerDelegate, AttackTimer, false);	
-	
+	ActionComponent->StartActionByName(this, "Projectile Attack");	
 }
 
 void ARoguePlayerCharacter::SecondaryAttack()
 {
-	PlayAnimMontage(AttackMontage);
-	if (TeleporterCastingEffect)
-	{
-		UNiagaraFunctionLibrary::SpawnSystemAttached(TeleporterCastingEffect, GetMesh(), MuzzleSocketName,
-		FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::Type::SnapToTarget, true);
-	}
-	if (TeleporterCastingSound)
-		UGameplayStatics::PlaySound2D(this, TeleporterCastingSound);
-	
-	FTimerHandle AttackTimerHandle;
-	const float AttackTimer = 0.2f;
-	
-	FTimerDelegate TimerDelegate;
-	TimerDelegate.BindLambda([&]()
-	{
-		AttackTimerElapsed(TeleporterProjectileClass, GetControlRotation());
-	});
-	GetWorldTimerManager().SetTimer(AttackTimerHandle, TimerDelegate, AttackTimer, false);
+	ActionComponent->StartActionByName(this, "Teleport Attack");
 }
 
 void ARoguePlayerCharacter::BlackholeAttack()
 {
-	PlayAnimMontage(AttackMontage);
-	if (BlackholeCastingEffect)
-	{
-		UNiagaraFunctionLibrary::SpawnSystemAttached(BlackholeCastingEffect, GetMesh(), MuzzleSocketName,
-		FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::Type::SnapToTarget, true);
-	}
-	if (BlackholeCastingSound)
-		UGameplayStatics::PlaySound2D(this, BlackholeCastingSound);
-	
-	FTimerHandle AttackTimerHandle;
-	const float AttackTimer = 0.3f;
-	
-	FTimerDelegate TimerDelegate;
-	TimerDelegate.BindLambda([&]()
-	{
-		AttackTimerElapsed(BlackholeProjectileClass, GetControlRotation());
-	});
-	GetWorldTimerManager().SetTimer(AttackTimerHandle, TimerDelegate, AttackTimer, false);
-}
-
-void ARoguePlayerCharacter::AttackTimerElapsed(const TSubclassOf<ARogueProjectileBase> ProjectileClassToSpawn, const FRotator& SpawnRotation)
-{
-	const FVector SpawnLocation = GetMesh()->GetSocketLocation(MuzzleSocketName);
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.Instigator = this;
-	SpawnParams.Owner = this;
-	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	AActor* SpawnedProjectile = GetWorld()->SpawnActor<AActor>(ProjectileClassToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
-	MoveIgnoreActorAdd(SpawnedProjectile);
+	ActionComponent->StartActionByName(this, "Blackhole Attack");
 }
 
 void ARoguePlayerCharacter::Jump()
 {
-	// For now, we just do the normal jump.
+	// Jump off the wall if in air or jump normally
+	
+	if (GetCharacterMovement()->IsFalling())
+	{
+		// Check for wall
+		FHitResult HitResult;
+		const FVector Start = GetActorLocation();
+		const FCollisionShape CollisionShape = FCollisionShape::MakeSphere(50.f);
+		FCollisionQueryParams CollisionParams;
+		CollisionParams.AddIgnoredActor(this);
+		const bool bIsNextToWall = GetWorld()->SweepSingleByChannel(HitResult, Start, Start, FQuat::Identity, ECC_WorldStatic, CollisionShape, CollisionParams);
+		if (!bIsNextToWall)
+			return;
+		
+		const FVector LaunchVelocity = (HitResult.ImpactNormal * 800.f) + FVector(0, 0, 500.f);
+		LaunchCharacter(LaunchVelocity, true, true);
+		return;
+	}
+	
 	Super::Jump();
 }
 
-// Called every frame
-void ARoguePlayerCharacter::Tick(float DeltaTime)
+void ARoguePlayerCharacter::StartSprint()
 {
-	Super::Tick(DeltaTime);
+	ActionComponent->StartActionByName(this, "Sprint");
+}
 
+void ARoguePlayerCharacter::StopSprint()
+{
+	ActionComponent->StopActionByName(this, "Sprint");
+}
+
+void ARoguePlayerCharacter::Parry()
+{
+	ActionComponent->StartActionByName(this, "Parry");
+}
+
+void ARoguePlayerCharacter::OnPlayerHealthChanged(AActor* InstigatorActor, URogueActionSystemComponent* OwningComp, const float NewHealth, const float OldHealth)
+{
+	if (FMath::IsNearlyZero(NewHealth))
+	{
+		// Died?
+		// Accepts null. But only works for this character not controller.
+		DisableInput(nullptr);
+		GetCharacterMovement()->StopMovementImmediately();
+		
+		PlayAnimMontage(DeathMontage);
+		return;
+	}
+	
+	const float DeltaHealth = NewHealth - OldHealth;
+	if (FMath::IsNegativeOrNegativeZero(DeltaHealth))
+	{
+		// Player was damaged.
+		if (ActionSystemComponent->IsHeavyDamage(DeltaHealth))
+		{
+			// Heavy Damage
+			PlayerVisualFeedbackComponent->VisualFeedback(ERogueVisualFeedbackType::DAMAGED_HEAVY);
+		}
+		else
+		{
+			// Light Damage
+			PlayerVisualFeedbackComponent->VisualFeedback(ERogueVisualFeedbackType::DAMAGED_LIGHT);
+		}
+	}
+	else
+	{
+		// Player was healed.
+		PlayerVisualFeedbackComponent->VisualFeedback(ERogueVisualFeedbackType::HEALED);
+	}
+}
+
+bool ARoguePlayerCharacter::GetActionComponent_Implementation(URogueActionComponent*& OutActionComponent)
+{
+	OutActionComponent = ActionComponent;
+	return ActionComponent != nullptr;
 }

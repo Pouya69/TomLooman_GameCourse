@@ -5,14 +5,14 @@ using UnrealBuildTool;
 public class TomLooman_GameCourse : ModuleRules
 {
 	public TomLooman_GameCourse(ReadOnlyTargetRules Target) : base(Target)
-	{
+	{	
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
 		PublicIncludePaths.Add("TomLooman_GameCourse/");
 		
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
 
-		PrivateDependencyModuleNames.AddRange(new string[] { "EnhancedInput", "Niagara" });
+		PrivateDependencyModuleNames.AddRange(new string[] { "EnhancedInput", "Niagara", "AIModule", "UMG", "GameplayTags" });
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

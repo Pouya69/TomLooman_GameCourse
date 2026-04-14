@@ -21,5 +21,13 @@ class TOMLOOMAN_GAMECOURSE_API IRogueInteractionInterface
 
 public:
 	UFUNCTION(BlueprintNativeEvent)
-		void Interact();
+		void Interact(AActor* CharacterInteracting);
+	
+	// For when the user cannot interact. E.g. When player already at full health and trying to interact.
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+		void CannotInteract();
+	
+	// When user interacts and the interactable is on cooldown, this fires.
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Cooldown")
+		void OnCooldown();
 };

@@ -3,22 +3,29 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ActionSystem/RogueActionSystemInterface.h"
 #include "GameFramework/Actor.h"
 #include "RogueExplosiveBarrel.generated.h"
 
+class URogueActionSystemComponent;
 class UNiagaraSystem;
 class URadialForceComponent;
 class UAudioComponent;
 
 UCLASS()
-class TOMLOOMAN_GAMECOURSE_API ARogueExplosiveBarrel : public AActor
+class TOMLOOMAN_GAMECOURSE_API ARogueExplosiveBarrel : public AActor, public IRogueActionSystemInterface
 {
 	GENERATED_BODY()
 
 public:
 	ARogueExplosiveBarrel();
+	
+	virtual bool GetActionSystemComponent_Implementation(URogueActionSystemComponent*& OutActionSystemComponent) override;
 
 protected:
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
+		TObjectPtr<URogueActionSystemComponent> ActionSystemComponent;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
 		TObjectPtr<UStaticMeshComponent> BarrelMeshComponent;
@@ -54,11 +61,15 @@ protected:
 	
 	void DestroyBarrel();
 	
-	FTimerHandle ExplosionTimerHandle;
+	void StartExplosion(const float ActualDamage);
 	
-	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	FTimerHandle ExplosionTimerHandle;
+	FTimerHandle DestroyTimerHandle;
 	
 	virtual void PostInitializeComponents() override;
+	
+	UFUNCTION()
+		void OnHealthChanged(AActor* InstigatorActor, URogueActionSystemComponent* OwningComp, const float NewHealth, const float OldHealth);
 	
 
 public:

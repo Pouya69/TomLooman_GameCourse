@@ -24,7 +24,7 @@ ARogueItemChest::ARogueItemChest()
 	AnimationSpeed = 50.f;
 }
 
-void ARogueItemChest::Interact_Implementation()
+void ARogueItemChest::Interact_Implementation(AActor* CharacterInteracting)
 {
 	// Play Animation
 	SetActorTickEnabled(true);
