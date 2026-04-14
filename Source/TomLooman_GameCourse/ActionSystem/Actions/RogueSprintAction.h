@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class TOMLOOMAN_GAMECOURSE_API URogueSprintAction : public URogueAction
 {
 	GENERATED_BODY()

@@ -3,10 +3,10 @@
 
 #include "RogueProjectileMagic.h"
 
-#include "ActionSystem/RogueActionSystemInterface.h"
 #include "Core/RogueGameplayFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "ActionSystem/RogueActionComponent.h"
+#include "ActionSystem/Actions/RogueActionEffect.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
@@ -65,6 +65,10 @@ void ARogueProjectileMagic::OnActorHit(UPrimitiveComponent* HitComponent, AActor
 		ProjectileMovementComponent->UpdateComponentVelocity();
 
 		return;
+	}
+	if (ActionComponent)
+	{
+		ActionComponent->AddAction(GetInstigator(), BurningActionEffectClass);
 	}
 	
 	URogueGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, 10.f, Hit);

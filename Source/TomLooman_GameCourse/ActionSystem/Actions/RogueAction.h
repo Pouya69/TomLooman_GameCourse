@@ -28,6 +28,10 @@ protected:
 	bool bIsRunning;
 	
 public:
+	// Starts immediately after being added to Action Component.
+	UPROPERTY(EditDefaultsOnly, Category="Action")
+		bool bAutoStart;
+	
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Action")
 		URogueActionComponent* GetOwningComponent() const;
 	

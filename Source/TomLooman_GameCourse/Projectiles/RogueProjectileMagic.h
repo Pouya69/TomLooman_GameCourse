@@ -6,6 +6,7 @@
 #include "RogueProjectileBase.h"
 #include "RogueProjectileMagic.generated.h"
 
+class URogueActionEffect;
 class UCameraShakeBase;
 
 UCLASS(Abstract)
@@ -27,4 +28,7 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly)
 		TSubclassOf<UCameraShakeBase> ImpactCameraShake;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Damage")
+		TSubclassOf<URogueActionEffect> BurningActionEffectClass;
 };

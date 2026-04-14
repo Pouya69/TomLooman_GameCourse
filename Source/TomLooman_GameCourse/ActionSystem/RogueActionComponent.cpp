@@ -13,11 +13,12 @@ void URogueActionComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	AActor* Owner = GetOwner();
 	for (const auto Action : DefaultActions)
-		AddAction(Action);
+		AddAction(Owner, Action);
 }
 
-void URogueActionComponent::AddAction(TSubclassOf<URogueAction> ActionClass)
+void URogueActionComponent::AddAction(AActor* Instigator, const TSubclassOf<URogueAction> ActionClass)
 {
 	if (!ensure(ActionClass))
 		return;
@@ -27,6 +28,8 @@ void URogueActionComponent::AddAction(TSubclassOf<URogueAction> ActionClass)
 		return;
 	
 	Actions.Add(NewAction);
+	if (NewAction->bAutoStart && ensure(NewAction->CanStart()))
+		NewAction->StartAction(Instigator);
 }
 
 bool URogueActionComponent::StartActionByName(AActor* Instigator, const FName ActionName)
@@ -64,8 +67,27 @@ bool URogueActionComponent::StopActionByName(AActor* Instigator, const FName Act
 	return false;
 }
 
+void URogueActionComponent::RemoveAction(URogueAction* ActionToRemove)
+{
+	if (!ensure(ActionToRemove && !ActionToRemove->IsRunning()))
+	{
+		return;
+	}
+	
+	Actions.Remove(ActionToRemove);
+}
+
+void URogueActionComponent::RemoveActionByName(const FName ActionName)
+{
+	for (URogueAction* Action : Actions)
+	{
+		if (Action && Action->ActionName == ActionName)
+			RemoveAction(Action);
+	}
+}
+
 void URogueActionComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
-	FActorComponentTickFunction* ThisTickFunction)
+                                          FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	

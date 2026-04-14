@@ -4,8 +4,10 @@
 #include "RogueInteractionComponent.h"
 
 #include "RogueGameTypes.h"
+#include "Blueprint/UserWidget.h"
 #include "Engine/OverlapResult.h"
 #include "Core/RogueInteractionInterface.h"
+#include "UI/Core/RogueWorldUserWidget.h"
 // #include "TomLooman_GameCourse/Core/RogueInteractionInterface.h"
 
 // ECVF_Cheat is only for devs not shipping. Won't be available in shipping.
@@ -20,12 +22,10 @@ URogueInteractionComponent::URogueInteractionComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 	
 	InteractionRadius = 800.f;
+	
+	CollisionChannel = COLLISION_INTERACTION;
 }
 
-void URogueInteractionComponent::BeginPlay()
-{
-	Super::BeginPlay();
-}
 
 void URogueInteractionComponent::Interact()
 {
@@ -41,7 +41,15 @@ void URogueInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickT
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	
-	// CastChecked is good for assertion
+	// TODO: Do not put this in tick for performance reasons.
+	FindBestInteractable();
+}
+
+void URogueInteractionComponent::FindBestInteractable()
+{
+	// TODO: Do not put this in tick for performance reasons.
+	
+		// CastChecked is good for assertion
 	const APlayerController* PC = CastChecked<APlayerController>(GetOwner());
 	const FVector Center = PC->GetPawn()->GetActorLocation();
 	
@@ -50,7 +58,6 @@ void URogueInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickT
 	// We create a new file.h in Source/PROJECT_NAME
 	// There we define our global stuff.
 	// COLLISION_INTERACTION = ECC_GameTraceChannel1
-	const ECollisionChannel CollisionChannel = COLLISION_INTERACTION;
 	const FCollisionShape CollisionShape = FCollisionShape::MakeSphere(InteractionRadius);
 	
 	const bool bIsInteractionDebugEnabled = CVarInteractionDebugDrawing.GetValueOnGameThread();
@@ -60,22 +67,15 @@ void URogueInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickT
 		DrawDebugSphere(GetWorld(), Center, InteractionRadius, 32.f, FColor::White);
 	}
 	
-	
-	// Closer to camera's looking direction
-	// We are using this method to find the best interactable based on the closest camera angle
-	// We get dot product of character to overlap AND the ControlRotation
-	// Dot product: -1 means opposite direction from camera
-	// 1: Exactly same as camera direction
-	// 0: left/right (perpendicular)
-	
 	AActor* BestActor = nullptr;
 	float HighestDotResult = -1.f;
+	const FVector PlayerLookingDirection = PC->GetControlRotation().Vector();
 	for (FOverlapResult& OverlapResult : Overlaps)
 	{
 		const FVector OverlapLocation = OverlapResult.GetActor()->GetActorLocation();
 		const FVector OverlapDirection = (OverlapLocation - Center).GetSafeNormal();
 		
-		const float DotResult = FVector::DotProduct(PC->GetControlRotation().Vector(),OverlapDirection);
+		const float DotResult = FVector::DotProduct(PlayerLookingDirection,OverlapDirection);
 		if (DotResult > HighestDotResult)
 		{
 			BestActor = OverlapResult.GetActor();
@@ -89,6 +89,37 @@ void URogueInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickT
 		}
 	}
 	
+	if (BestActor)
+	{
+		if (DefaultWidgetInstance == nullptr && ensure(DefaultWidgetClass != nullptr))
+		{
+			DefaultWidgetInstance = CreateWidget<URogueWorldUserWidget>(GetWorld(), DefaultWidgetClass);
+		}
+		
+		if (DefaultWidgetInstance)
+		{
+			DefaultWidgetInstance->AttachTo = BestActor;
+			
+			if (!DefaultWidgetInstance->IsInViewport())
+				DefaultWidgetInstance->AddToViewport();
+		}
+	}
+	else
+	{
+		if (DefaultWidgetInstance && DefaultWidgetInstance->IsInViewport())
+			DefaultWidgetInstance->RemoveFromParent();
+	}
+	/*
+	if (SelectedActor != BestActor)
+	{
+		if (SelectedActor != nullptr)
+			IRogueInteractionInterface::Execute_OutOfFocus(SelectedActor);
+	
+		if (BestActor != nullptr)
+			IRogueInteractionInterface::Execute_InFocus(BestActor);
+	}
+	*/
+	
 	SelectedActor = BestActor;
 	if (bIsInteractionDebugEnabled)
 	{
@@ -97,5 +128,4 @@ void URogueInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickT
 			DrawDebugBox(GetWorld(), BestActor->GetActorLocation(), FVector(60.f), FColor::Green, false);
 		}
 	}
-	
 }

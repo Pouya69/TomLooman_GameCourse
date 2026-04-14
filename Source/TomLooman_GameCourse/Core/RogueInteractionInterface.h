@@ -30,4 +30,12 @@ public:
 	// When user interacts and the interactable is on cooldown, this fires.
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Cooldown")
 		void OnCooldown();
+	
+	// Player is looking at this object (Selected Actor)
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Cooldown")
+		void InFocus();
+	
+	// Player is not looking at this object
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Cooldown")
+		void OutOfFocus();
 };

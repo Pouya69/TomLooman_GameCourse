@@ -22,7 +22,7 @@ public:
 		FGameplayTagContainer ActiveGameplayTags;
 	
 	UFUNCTION(BlueprintCallable, Category="Actions")
-		void AddAction(TSubclassOf<URogueAction> ActionClass);
+		void AddAction(AActor* Instigator, const TSubclassOf<URogueAction> ActionClass);
 	
 	UFUNCTION(BlueprintCallable, Category="Actions")
 		bool StartActionByName(AActor* Instigator, const FName ActionName);
@@ -30,9 +30,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Actions")
 		bool StopActionByName(AActor* Instigator, const FName ActionName);
 	
+	UFUNCTION(BlueprintCallable, Category="Actions")
+		void RemoveAction(URogueAction* ActionToRemove);
+	
+	UFUNCTION(BlueprintCallable, Category="Actions")
+		void RemoveActionByName(const FName ActionName);
+	
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
 	static URogueActionComponent* GetActionComponent(AActor* Actor);
+	
+	
 
 protected:
 	
