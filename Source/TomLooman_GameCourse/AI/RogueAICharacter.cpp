@@ -51,8 +51,12 @@ void ARogueAICharacter::PostInitializeComponents()
 	VisualFeedbackComponent->InitializeVisualFeedback(GetMesh());
 	
 	AIActionSystemComponent->OnHealthChanged.AddDynamic(this, &ARogueAICharacter::OnAIHealthChanged);
+	if (GetWorld() && GetWorld()->IsGameWorld())
+	{
+		MyAIController = Cast<ARogueAIController>(GetController());
+		MyAIController->OnPlayerSpotted.AddDynamic(this, &ARogueAICharacter::OnPlayerSpotted);
+	}
 	
-	MyAIController = Cast<ARogueAIController>(GetController());
 }
 
 bool ARogueAICharacter::Heal(const float Amount)
@@ -104,6 +108,16 @@ bool ARogueAICharacter::GetActionSystemComponent_Implementation(URogueActionSyst
 int ARogueAICharacter::GetCreditsForDeath() const
 {
 	return CreditsForDeath;
+}
+
+void ARogueAICharacter::OnPlayerSpotted(ARogueAIController* AIControllerSpotter, AActor* SpottedActor)
+{
+	if (!SpottedWidgetClass) return;
+	auto CreatedWidget = CreateWidget<URogueWorldUserWidget>(GetWorld(), SpottedWidgetClass);
+	if (!CreatedWidget) return;
+	
+	CreatedWidget->AttachTo = this;
+	CreatedWidget->AddToViewport();
 }
 
 void ARogueAICharacter::OnAIHealthChanged(AActor* InstigatorActor, URogueActionSystemComponent* OwningComp,

@@ -6,7 +6,7 @@
 
 int ARoguePlayerState::AddCredits(const int AmountToAdd)
 {
-	Credits += AmountToAdd;
+	SetCredits(Credits + AmountToAdd);
 	
 	return Credits;
 }

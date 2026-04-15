@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "ActionSystem/RogueActionSystemComponent.h"
 #include "UObject/Object.h"
 #include "RogueAction.generated.h"
 
@@ -34,6 +35,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Action")
 		URogueActionComponent* GetOwningComponent() const;
+	
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Action")
+	URogueActionSystemComponent* GetActionSystemComponent() const;
 	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Action")
 		void StartAction(AActor* Instigator);

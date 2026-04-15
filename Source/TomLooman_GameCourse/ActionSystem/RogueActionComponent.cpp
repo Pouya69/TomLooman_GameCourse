@@ -67,6 +67,19 @@ bool URogueActionComponent::StopActionByName(AActor* Instigator, const FName Act
 	return false;
 }
 
+const URogueAction* URogueActionComponent::GetAction(const TSubclassOf<URogueAction> ActionClass)
+{
+	for (const URogueAction* Action : Actions)
+	{
+		if (Action && Action->IsA(ActionClass))
+		{
+			return Action;
+		}
+	}
+	
+	return nullptr;
+}
+
 void URogueActionComponent::RemoveAction(URogueAction* ActionToRemove)
 {
 	if (!ensure(ActionToRemove && !ActionToRemove->IsRunning()))

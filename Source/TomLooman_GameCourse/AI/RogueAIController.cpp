@@ -72,6 +72,11 @@ void ARogueAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus St
 		}
 		if (Stimulus.WasSuccessfullySensed())
 		{
+			if (PawnSensed == GetBlackboardComponent()->GetValueAsObject(TargetActorName))
+			{
+				// Same thing we ignore.
+				return;
+			}
 			// Sensed
 			const FVector PlayerLocation = PawnSensed->GetActorLocation();
 			GetBlackboardComponent()->SetValueAsVector(MoveToLocationName, PlayerLocation);
@@ -81,6 +86,8 @@ void ARogueAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus St
 			{
 				DrawDebugString(GetWorld(), PlayerLocation, TEXT("Player Detected"), nullptr, FColor::White, 4.f, true);
 			}
+			
+			OnPlayerSpotted.Broadcast(this, PawnSensed);
 		}
 		
 		else

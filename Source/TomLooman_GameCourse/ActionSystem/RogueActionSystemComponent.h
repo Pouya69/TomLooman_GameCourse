@@ -18,11 +18,23 @@ struct FRogueAttributeSet
 	FRogueAttributeSet(const float InHealth, const float InMaxHealth, const float InSmallDamageThreshold)
 		: Health(InHealth), MaxHealth(InMaxHealth), SmallDamageThreshold(InSmallDamageThreshold) {}
 	
+	FRogueAttributeSet(const float InHealth, const float InMaxHealth, const float InSmallDamageThreshold, const float InMaxRage)
+		: Health(InHealth), MaxHealth(InMaxHealth), MaxRage(InMaxRage), SmallDamageThreshold(InSmallDamageThreshold) {}
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 		float Health;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 		float MaxHealth;
+		
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+		float MaxRage;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+		float Rage;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+		float RageDamageMultiplier;
 		
 	// If Damage > SmallDamageThreshold, it is considered Heavy Damage.
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -30,7 +42,9 @@ struct FRogueAttributeSet
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnHealthChanged, AActor*, InstigatorActor, URogueActionSystemComponent*, OwningComp, const float, NewHealth, const float, OldHealth);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnRageChanged, URogueActionSystemComponent*, OwningComp, const float, NewRage, const float, RageDelta);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnShowDamagePopup, const float, Damage);
+
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Blueprintable)
 class TOMLOOMAN_GAMECOURSE_API URogueActionSystemComponent : public UActorComponent
@@ -38,7 +52,13 @@ class TOMLOOMAN_GAMECOURSE_API URogueActionSystemComponent : public UActorCompon
 	GENERATED_BODY()
 
 public:
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Attributes")
+		bool IsRageFull() const;
+	
 	URogueActionSystemComponent();
+	
+	UFUNCTION(BlueprintCallable, Category="Attributes")
+		void ApplyRageChange(const float RageDelta);
 	
 	// Only use it for custom initialization.
 	UFUNCTION(BlueprintCallable, Category="Attributes")
@@ -69,6 +89,9 @@ public:
 	UPROPERTY(BlueprintAssignable)
 		FOnShowDamagePopup OnShowDamagePopup;
 	
+	UPROPERTY(BlueprintAssignable)
+		FOnRageChanged OnRageChanged;
+	
 	UFUNCTION(BlueprintCallable, Category="Attributes")
 		const FRogueAttributeSet& GetAttributes() const;
 	
@@ -77,6 +100,7 @@ public:
 		static URogueActionSystemComponent* GetActionSystemComponent(AActor* Actor);
 	
 protected:
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
 		FRogueAttributeSet Attributes;
 };

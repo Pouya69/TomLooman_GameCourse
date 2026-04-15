@@ -5,6 +5,7 @@
 
 #include "NiagaraFunctionLibrary.h"
 #include "RogueGameTypes.h"
+#include "ActionSystem/RogueActionSystemComponent.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 #include "Projectiles/RogueProjectileBlackhole.h"
@@ -21,7 +22,10 @@ void URogueBlackholeAttackAction::StartAction_Implementation(AActor* Instigator)
 	Super::StartAction_Implementation(Instigator);
 	
 	ACharacter* Character = Cast<ACharacter>(Instigator);
-	if (!Character) return;
+	if (!ensure(Character)) return;
+	
+	auto ActionSystemComp = GetActionSystemComponent();
+	ActionSystemComp->ApplyRageChange(-ActionSystemComp->GetAttributes().MaxRage);
 	
 	Character->PlayAnimMontage(AttackMontage);
 	if (BlackholeCastingEffect)
@@ -48,8 +52,17 @@ void URogueBlackholeAttackAction::StopAction_Implementation(AActor* Instigator)
 	Super::StopAction_Implementation(Instigator);
 }
 
+bool URogueBlackholeAttackAction::CanStart_Implementation() const
+{
+	const bool bCanStartFromParent = Super::CanStart_Implementation();
+	if (!bCanStartFromParent) return false;
+	
+	const auto ActionComp = GetActionSystemComponent();
+	return ActionComp != nullptr && ActionComp->IsRageFull();
+}
+
 void URogueBlackholeAttackAction::AttackTimerElapsed(AActor* Instigator,
-	const TSubclassOf<ARogueProjectileBase> ProjectileClassToSpawn)
+                                                     const TSubclassOf<ARogueProjectileBase> ProjectileClassToSpawn)
 {
 	ACharacter* Character = Cast<ACharacter>(Instigator);
 	if (!Character) return;

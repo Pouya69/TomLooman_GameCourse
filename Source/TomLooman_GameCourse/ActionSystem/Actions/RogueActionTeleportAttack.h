@@ -25,6 +25,8 @@ public:
 	virtual void StopAction_Implementation(AActor* Instigator) override;
 	
 protected:
+	
+	
 	UPROPERTY(EditDefaultsOnly, Category="Primary Attack")
 		TObjectPtr<UAnimMontage> AttackMontage;
 	

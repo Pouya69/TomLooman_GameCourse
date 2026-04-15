@@ -7,11 +7,14 @@
 // #include "Runtime/AIModule/Classes/AIController.h"
 #include "RogueAIController.generated.h"
 
+class ARogueAICharacter;
 class UAISenseConfig_Sight;
 class UAISense;
 struct FAIStimulus;
 class UBehaviorTree;
 class UAIPerceptionComponent;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPlayerSpotted, ARogueAIController*, AIControllerSpotter, AActor*, SpottedActor);
 
 UCLASS()
 class TOMLOOMAN_GAMECOURSE_API ARogueAIController : public ADetourCrowdAIController
@@ -23,6 +26,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="AI")
 		void SetTargetActor(AActor* Actor);
+	
+	UPROPERTY(BlueprintAssignable)
+		FOnPlayerSpotted OnPlayerSpotted;
 	
 protected:
 	virtual void BeginPlay() override;

@@ -30,6 +30,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Actions")
 		bool StopActionByName(AActor* Instigator, const FName ActionName);
 	
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Actions")
+	const URogueAction* GetAction(const TSubclassOf<URogueAction> ActionClass);
+	
 	UFUNCTION(BlueprintCallable, Category="Actions")
 		void RemoveAction(URogueAction* ActionToRemove);
 	

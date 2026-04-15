@@ -169,7 +169,7 @@ void ARoguePlayerCharacter::OnPlayerHealthChanged(AActor* InstigatorActor, URogu
 	if (FMath::IsNegativeOrNegativeZero(DeltaHealth))
 	{
 		// Player was damaged.
-		if (ActionSystemComponent->IsHeavyDamage(DeltaHealth))
+		if (ActionSystemComponent->IsHeavyDamage(-DeltaHealth))
 		{
 			// Heavy Damage
 			PlayerVisualFeedbackComponent->VisualFeedback(ERogueVisualFeedbackType::DAMAGED_HEAVY);
@@ -179,6 +179,8 @@ void ARoguePlayerCharacter::OnPlayerHealthChanged(AActor* InstigatorActor, URogu
 			// Light Damage
 			PlayerVisualFeedbackComponent->VisualFeedback(ERogueVisualFeedbackType::DAMAGED_LIGHT);
 		}
+		
+		OwningComp->ApplyRageChange(-DeltaHealth);
 	}
 	else
 	{

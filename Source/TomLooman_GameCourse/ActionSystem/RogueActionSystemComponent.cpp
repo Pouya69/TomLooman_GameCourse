@@ -7,11 +7,30 @@
 static TAutoConsoleVariable<float> CVar_GlobalDamageMultiplier(TEXT("game.global.DamageMultiplier"), 1.0f, TEXT("Multiply the global damage value for ActionSystemComponent."), ECVF_Cheat);
 
 
+
 URogueActionSystemComponent::URogueActionSystemComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 	
 	Attributes.Health = 100.0f;
+	
+	Attributes.MaxRage = 100.0f;
+	Attributes.RageDamageMultiplier = 3.0f;
+}
+
+void URogueActionSystemComponent::ApplyRageChange(const float RageDelta)
+{
+	const float OldRage = Attributes.Rage;
+	Attributes.Rage = FMath::Clamp(Attributes.Rage + RageDelta * Attributes.RageDamageMultiplier, 0.0f, Attributes.MaxRage);
+	
+	const float ActualDelta = Attributes.Rage - OldRage;
+	if (!FMath::IsNearlyZero(ActualDelta))
+		OnRageChanged.Broadcast(this, Attributes.Rage, ActualDelta);
+}
+
+bool URogueActionSystemComponent::IsRageFull() const
+{
+	return FMath::IsNearlyEqual(Attributes.Rage, Attributes.MaxRage);
 }
 
 void URogueActionSystemComponent::InitializeAttributes(FRogueAttributeSet InAttributes)

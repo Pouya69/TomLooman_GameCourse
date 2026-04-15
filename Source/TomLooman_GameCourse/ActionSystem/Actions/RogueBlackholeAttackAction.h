@@ -18,8 +18,9 @@ class TOMLOOMAN_GAMECOURSE_API URogueBlackholeAttackAction : public URogueAction
 	GENERATED_BODY()
 	
 protected:
+	virtual bool CanStart_Implementation() const override;
 		
-	UPROPERTY(EditDefaultsOnly, Category="Primary Attack")
+	UPROPERTY(EditDefaultsOnly, Category="Blackhole Attack")
 		TObjectPtr<UAnimMontage> AttackMontage;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Blackhole Attack")
@@ -31,15 +32,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Blackhole Attack")
 		TObjectPtr<USoundBase> BlackholeCastingSound;
 	
-	UPROPERTY(VisibleAnywhere, Category = "Primary Attack")
+	UPROPERTY(VisibleAnywhere, Category = "Blackhole Attack")
 		FName MuzzleSocketName;
 	
 	void AttackTimerElapsed(AActor* Instigator, const TSubclassOf<ARogueProjectileBase> ProjectileClassToSpawn);
 	
-public:
-	URogueBlackholeAttackAction();
-	
 	virtual void StartAction_Implementation(AActor* Instigator) override;
 	
 	virtual void StopAction_Implementation(AActor* Instigator) override;
+	
+public:
+	URogueBlackholeAttackAction();
 };

@@ -13,6 +13,8 @@ URogueActionTeleportAttack::URogueActionTeleportAttack()
 {
 	ActionName = "Teleport Attack";
 	MuzzleSocketName = "Muzzle_01";
+	
+	bAutoStart = false;
 }
 
 void URogueActionTeleportAttack::StartAction_Implementation(AActor* Instigator)
@@ -47,7 +49,7 @@ void URogueActionTeleportAttack::StopAction_Implementation(AActor* Instigator)
 }
 
 void URogueActionTeleportAttack::AttackTimerElapsed(AActor* Instigator,
-	const TSubclassOf<ARogueProjectileBase> ProjectileClassToSpawn)
+                                                    const TSubclassOf<ARogueProjectileBase> ProjectileClassToSpawn)
 {
 	ACharacter* Character = Cast<ACharacter>(Instigator);
 	if (!Character) return;

@@ -47,6 +47,12 @@ public:
 		int GetCreditsForDeath() const;
 	
 protected:
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+		TSubclassOf<URogueWorldUserWidget> SpottedWidgetClass;
+	
+	UFUNCTION()
+		void OnPlayerSpotted(ARogueAIController* AIControllerSpotter, AActor* SpottedActor);
+	
 	virtual void PostInitializeComponents() override;
 	
 	UPROPERTY(BlueprintReadOnly)

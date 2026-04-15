@@ -4,6 +4,7 @@
 #include "RogueAction.h"
 
 #include "ActionSystem/RogueActionComponent.h"
+#include "ActionSystem/RogueActionSystemComponent.h"
 
 void URogueAction::StartAction_Implementation(AActor* Instigator)
 {
@@ -30,6 +31,11 @@ UWorld* URogueAction::GetWorld() const
 URogueActionComponent* URogueAction::GetOwningComponent() const
 {
 	return Cast<URogueActionComponent>(GetOuter());
+}
+
+URogueActionSystemComponent* URogueAction::GetActionSystemComponent() const
+{
+	return URogueActionSystemComponent::GetActionSystemComponent(GetOwningComponent()->GetOwner());
 }
 
 bool URogueAction::IsRunning() const
