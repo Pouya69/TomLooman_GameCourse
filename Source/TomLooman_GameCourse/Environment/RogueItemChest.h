@@ -22,6 +22,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category="Components")
 		TObjectPtr<UStaticMeshComponent> LidMeshComponent;
 	
+	UPROPERTY(ReplicatedUsing="OnRep_PlayChestAnimation", BlueprintReadOnly, Category="Animation")
+		bool bIsLidOpen;
+	
+	UFUNCTION()
+		void OnRep_PlayChestAnimation();
+	
 	UPROPERTY(VisibleAnywhere, Category="Animation")
 		float CurrentAnimationPitch;
 	
@@ -29,11 +35,16 @@ protected:
 		float AnimationTargetPitch;
 	
 	UPROPERTY(EditAnywhere, Category="Animation")
+		float OpenedPitch;
+	
+	UPROPERTY(EditAnywhere, Category="Animation")
 		float AnimationSpeed;
 	
 	UFUNCTION(BlueprintImplementableEvent)
 		void ChestAnimationComplete();
-
+	
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+	
 public:
 	// The Interact() function is only driven in BP. This is called as well.
 	// In BP, we need to right click on Interact event

@@ -19,6 +19,9 @@ public:
 	URogueInteractionComponent();
 
 protected:
+	UFUNCTION(Server, Reliable)
+		void ServerInteract(AActor* InFocus);
+	
 	UPROPERTY(EditDefaultsOnly, Category="Interaction")
 		TEnumAsByte<ECollisionChannel> CollisionChannel;
 	

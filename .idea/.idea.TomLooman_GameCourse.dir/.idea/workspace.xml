@@ -14,40 +14,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="326e9f6b-e5e3-411f-bc0a-e0922f5bc129" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Source/TomLooman_GameCourse/ActionSystem/Actions/RogueThornEffect.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/TomLooman_GameCourse/ActionSystem/Actions/RogueThornEffect.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/TomLooman_GameCourse/PowerUps/RoguePowerup_Action.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/TomLooman_GameCourse/PowerUps/RoguePowerup_Action.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.TomLooman_GameCourse.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.TomLooman_GameCourse.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/DefaultGameplayTags.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultGameplayTags.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/ActionRogueLike/AI/MinionRanged/BP_MinionRanged_01.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/ActionRogueLike/AI/MinionRanged/BP_MinionRanged_01.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/ActionRogueLike/Actions/Effect_Burning_BP.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/ActionRogueLike/Actions/Effect_Burning_BP.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/ActionRogueLike/BP_PlayerCharacter_01.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/ActionRogueLike/BP_PlayerCharacter_01.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/ActionRogueLike/Materials/M_HealthBar_01.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/ActionRogueLike/Materials/M_HealthBar_01.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/ActionRogueLike/Powerups/BP_CreditsCoin_01.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/ActionRogueLike/Powerups/BP_CreditsCoin_01.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/ActionRogueLike/Projectiles/BP_MagicProjectile_01.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/ActionRogueLike/Projectiles/BP_MagicProjectile_01.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/ActionRogueLike/UI/WBP_Credits_01.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/ActionRogueLike/UI/WBP_Credits_01.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/ActionRogueLike/UI/WBP_MainHUD_01.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/ActionRogueLike/UI/WBP_MainHUD_01.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/ActionRogueLike/UI/WBP_PlayerHealth_01.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/ActionRogueLike/UI/WBP_PlayerHealth_01.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/ExampleContent/Materials/M_Pickup_Coin.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/ExampleContent/Materials/M_Pickup_Coin.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/ExampleContent/Materials/M_Pickup_Coin_Inst.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/ExampleContent/Materials/M_Pickup_Coin_Inst.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/ActionRogueLike/Environment/BP_RogueItemChest_01.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/ActionRogueLike/Environment/BP_RogueItemChest_01.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/ActionRogueLike/UI/WBP_PlayerRage_01.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/ActionRogueLike/UI/WBP_PlayerRage_01.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/TomLooman_GameCourse/AI/RogueAICharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TomLooman_GameCourse/AI/RogueAICharacter.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/TomLooman_GameCourse/AI/RogueAICharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TomLooman_GameCourse/AI/RogueAICharacter.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/TomLooman_GameCourse/AI/RogueAIController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TomLooman_GameCourse/AI/RogueAIController.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/TomLooman_GameCourse/AI/RogueAIController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TomLooman_GameCourse/AI/RogueAIController.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/TomLooman_GameCourse/ActionSystem/Actions/RogueAction.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TomLooman_GameCourse/ActionSystem/Actions/RogueAction.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/TomLooman_GameCourse/ActionSystem/Actions/RogueAction.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TomLooman_GameCourse/ActionSystem/Actions/RogueAction.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/TomLooman_GameCourse/ActionSystem/Actions/RogueActionTeleportAttack.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TomLooman_GameCourse/ActionSystem/Actions/RogueActionTeleportAttack.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/TomLooman_GameCourse/ActionSystem/Actions/RogueActionTeleportAttack.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TomLooman_GameCourse/ActionSystem/Actions/RogueActionTeleportAttack.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/TomLooman_GameCourse/ActionSystem/Actions/RogueBlackholeAttackAction.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TomLooman_GameCourse/ActionSystem/Actions/RogueBlackholeAttackAction.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/TomLooman_GameCourse/ActionSystem/Actions/RogueBlackholeAttackAction.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TomLooman_GameCourse/ActionSystem/Actions/RogueBlackholeAttackAction.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/TomLooman_GameCourse/ActionSystem/RogueActionComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TomLooman_GameCourse/ActionSystem/RogueActionComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/TomLooman_GameCourse/ActionSystem/RogueActionComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TomLooman_GameCourse/ActionSystem/RogueActionComponent.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/TomLooman_GameCourse/ActionSystem/RogueActionSystemComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TomLooman_GameCourse/ActionSystem/RogueActionSystemComponent.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/TomLooman_GameCourse/ActionSystem/RogueActionSystemComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TomLooman_GameCourse/ActionSystem/RogueActionSystemComponent.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/TomLooman_GameCourse/Player/RoguePlayerCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TomLooman_GameCourse/Player/RoguePlayerCharacter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/TomLooman_GameCourse/Player/RoguePlayerState.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TomLooman_GameCourse/Player/RoguePlayerState.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/TomLooman_GameCourse/Environment/RogueItemChest.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TomLooman_GameCourse/Environment/RogueItemChest.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/TomLooman_GameCourse/Environment/RogueItemChest.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TomLooman_GameCourse/Environment/RogueItemChest.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/TomLooman_GameCourse/Player/RogueInteractionComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TomLooman_GameCourse/Player/RogueInteractionComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/TomLooman_GameCourse/Player/RogueInteractionComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TomLooman_GameCourse/Player/RogueInteractionComponent.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TomLooman_GameCourse.uproject.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/TomLooman_GameCourse.uproject.DotSettings.user" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,7 +39,8 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="cidr-memory-view://14" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../Program Files/Epic Games/UE_5.7/Engine/Source/Runtime/Core/Public/Delegates/DelegateSignatureImpl.inl" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../Program Files/Epic Games/UE_5.7/Engine/Source/Runtime/CoreUObject/Public/UObject/ObjectHandle.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../Program Files/Epic Games/UE_5.7/Engine/Source/Runtime/Engine/Classes/Engine/EngineTypes.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/TomLooman_GameCourse/ActionSystem/Actions/RogueAction.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/TomLooman_GameCourse/ActionSystem/Actions/RogueAction.h" root0="FORCE_HIGHLIGHTING" />
@@ -215,7 +194,8 @@
       <workItem from="1776149527496" duration="1218000" />
       <workItem from="1776150788580" duration="4352000" />
       <workItem from="1776158521179" duration="3990000" />
-      <workItem from="1776227867990" duration="7941000" />
+      <workItem from="1776227867990" duration="8020000" />
+      <workItem from="1776301224387" duration="11516000" />
     </task>
     <servers />
   </component>

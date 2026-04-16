@@ -54,9 +54,18 @@ void ARogueAICharacter::PostInitializeComponents()
 	if (GetWorld() && GetWorld()->IsGameWorld())
 	{
 		MyAIController = Cast<ARogueAIController>(GetController());
+		if (!ensure(MyAIController))
+		{
+			return;
+		}
 		MyAIController->OnPlayerSpotted.AddDynamic(this, &ARogueAICharacter::OnPlayerSpotted);
 	}
 	
+}
+
+void ARogueAICharacter::BeginPlay()
+{
+	Super::BeginPlay();
 }
 
 bool ARogueAICharacter::Heal(const float Amount)
@@ -117,7 +126,8 @@ void ARogueAICharacter::OnPlayerSpotted(ARogueAIController* AIControllerSpotter,
 	if (!CreatedWidget) return;
 	
 	CreatedWidget->AttachTo = this;
-	CreatedWidget->AddToViewport();
+	// The 10 will make sure it appears in front of other stuff (health etc.)
+	CreatedWidget->AddToViewport(10);
 }
 
 void ARogueAICharacter::OnAIHealthChanged(AActor* InstigatorActor, URogueActionSystemComponent* OwningComp,

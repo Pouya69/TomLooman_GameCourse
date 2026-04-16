@@ -55,6 +55,8 @@ protected:
 	
 	virtual void PostInitializeComponents() override;
 	
+	virtual void BeginPlay() override;
+	
 	UPROPERTY(BlueprintReadOnly)
 		TObjectPtr<ARogueAIController> MyAIController;
 	

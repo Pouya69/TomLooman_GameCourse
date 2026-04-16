@@ -42,7 +42,9 @@ struct FRogueAttributeSet
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnHealthChanged, AActor*, InstigatorActor, URogueActionSystemComponent*, OwningComp, const float, NewHealth, const float, OldHealth);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnRageChanged, URogueActionSystemComponent*, OwningComp, const float, NewRage, const float, RageDelta);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnRageChanged, URogueActionSystemComponent*, OwningComp, const float, NewRage, const float, DeltaRage);
+
+// DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnAttributesChanged, URogueActionSystemComponent*, OwningComp, const float, NewValue, const float, Delta);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnShowDamagePopup, const float, Damage);
 
 

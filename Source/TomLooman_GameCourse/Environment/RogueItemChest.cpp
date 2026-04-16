@@ -2,6 +2,7 @@
 
 
 #include "RogueItemChest.h"
+#include "Net/UnrealNetwork.h"
 
 
 ARogueItemChest::ARogueItemChest()
@@ -17,17 +18,37 @@ ARogueItemChest::ARogueItemChest()
 	LidMeshComponent->SetCollisionProfileName(TEXT("NoCollision"));
 	LidMeshComponent->SetupAttachment(BaseMeshComponent);
 	
-	
-	
 	CurrentAnimationPitch = 0.0f;
 	AnimationTargetPitch = 120.f;
+	OpenedPitch = 120.0f;
 	AnimationSpeed = 50.f;
+	
+	bIsLidOpen = false;
+	
+	bReplicates=true;
+}
+
+void ARogueItemChest::OnRep_PlayChestAnimation()
+{
+	// Play Animation
+	UE_LOG(LogTemp, Warning, TEXT("Opened Chest"));
+	AnimationTargetPitch = bIsLidOpen ? OpenedPitch : 0.0f;
+	
+	SetActorTickEnabled(true);
+}
+
+void ARogueItemChest::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	
+	DOREPLIFETIME(ARogueItemChest, bIsLidOpen);
 }
 
 void ARogueItemChest::Interact_Implementation(AActor* CharacterInteracting)
 {
-	// Play Animation
-	SetActorTickEnabled(true);
+	bIsLidOpen = !bIsLidOpen;
+	
+	OnRep_PlayChestAnimation();
 }
 
 void ARogueItemChest::Tick(float DeltaTime)
@@ -46,4 +67,3 @@ void ARogueItemChest::Tick(float DeltaTime)
 		ChestAnimationComplete();
 	}
 }
-

@@ -26,23 +26,29 @@ URogueInteractionComponent::URogueInteractionComponent()
 	CollisionChannel = COLLISION_INTERACTION;
 }
 
-
-void URogueInteractionComponent::Interact()
+void URogueInteractionComponent::ServerInteract_Implementation(AActor* InFocus)
 {
 	// This is how we call Interact on interfaces for BP implementation. No need for casting.
 	// In BP, we right click on even and do 'Call Parent ...'
 	// This would call Interact_Implementation() first and then what we have.
-	if (SelectedActor)
-		IRogueInteractionInterface::Execute_Interact(SelectedActor, CastChecked<APlayerController>(GetOwner())->GetPawn());
+	if (InFocus)
+		IRogueInteractionInterface::Execute_Interact(InFocus, CastChecked<APlayerController>(GetOwner())->GetPawn());
+}
+
+
+void URogueInteractionComponent::Interact()
+{
+	ServerInteract(SelectedActor);
 }
 
 void URogueInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                                FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	
 	// TODO: Do not put this in tick for performance reasons.
-	FindBestInteractable();
+	const APawn* Pawn = Cast<APlayerController>(GetOwner())->GetPawn();
+	if (Pawn->IsLocallyControlled())
+		FindBestInteractable();
 }
 
 void URogueInteractionComponent::FindBestInteractable()
